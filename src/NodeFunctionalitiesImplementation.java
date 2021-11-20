@@ -23,8 +23,8 @@ public class NodeFunctionalitiesImplementation implements NodeFunctionalities{
         }
     }
 
-    //@Override
-    public static void connectClient(String[] args) throws RemoteException{
+    @Override
+    public void connectClient(String[] args) throws RemoteException{
         String host = (args.length < 1) ? null : args[0];
         try {
             Registry registry = LocateRegistry.getRegistry(host, 1098);
@@ -36,8 +36,8 @@ public class NodeFunctionalitiesImplementation implements NodeFunctionalities{
         }
     }
 
-    //@Override
-    public static void startServer() throws RemoteException{
+    @Override
+    public void startServer() throws RemoteException{
         try {
             NodeFunctionalitiesImplementation obj = new NodeFunctionalitiesImplementation();
             NodeFunctionalities remoteobj = (NodeFunctionalities) UnicastRemoteObject.exportObject(obj, 0);
