@@ -25,9 +25,10 @@ public class NodeFunctionalitiesImplementation implements NodeFunctionalities{
 
     @Override
     public void connectClient(String[] args) throws RemoteException{
-        String host = (args.length < 1) ? null : args[0];
+        int port = Integer.parseInt(args[1]);
+        String host = (args.length < 3) ? null : args[2];
         try {
-            Registry registry = LocateRegistry.getRegistry(host, 1098);
+            Registry registry = LocateRegistry.getRegistry(host, port);
             NodeFunctionalities stub = (NodeFunctionalities) registry.lookup("Hello");
             String response = stub.hello();
             System.out.println("response: " + response);
@@ -37,11 +38,12 @@ public class NodeFunctionalitiesImplementation implements NodeFunctionalities{
     }
 
     @Override
-    public void startServer() throws RemoteException{
+    public void startServer(String[] args) throws RemoteException{
         try {
+            int port = Integer.parseInt(args[0]);
             NodeFunctionalitiesImplementation obj = new NodeFunctionalitiesImplementation();
-            NodeFunctionalities remoteobj = (NodeFunctionalities) UnicastRemoteObject.exportObject(obj, 0);
-            Registry registry = startRegistry(1098);
+            NodeFunctionalities remoteobj = (NodeFunctionalities) UnicastRemoteObject.exportObject(obj, port);
+            Registry registry = startRegistry(port);
             registry.bind("Hello", remoteobj);
             System.err.println("Server ready 4, rmi_registry started automatically");
         } catch (Exception e) {
