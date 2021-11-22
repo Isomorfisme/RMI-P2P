@@ -1,6 +1,6 @@
 import java.rmi.RemoteException;
 
-public class Node extends NodeFunctionalitiesImplementation {
+public class Node extends NodeFunctionalities {
     //args[0] -> port; args[1] -> port to connect, args[2] -> IP to connect
     public static void main(String[] args) throws RemoteException {
         Node node = new Node();
