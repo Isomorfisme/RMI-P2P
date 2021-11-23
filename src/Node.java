@@ -8,5 +8,8 @@ public class Node extends NodeFunctionalities {
         if(args.length > 1){  //There is a port to connect
             node.connectClient(args);
         }
+        while(true){
+
+        }
     }
 }

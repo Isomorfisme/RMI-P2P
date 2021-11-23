@@ -1,11 +1,14 @@
 import java.io.Serializable;
 
 public class File implements Serializable {
-    public File(){
+    private static final long serialVersionUID = 6529685098267757691L;
 
+    int id = 0;
+    public File(int port){
+        this.id = port;
     }
 
     public String toString(){
-        return "hello";
+        return "hello" + this.id;
     }
 }
