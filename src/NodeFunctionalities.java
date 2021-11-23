@@ -42,7 +42,7 @@ public class NodeFunctionalities {
             Folder folder = new FolderImplementation();
             //FileManager remoteobj = (FileManager) UnicastRemoteObject.exportObject(file, port);
             Registry registry = startRegistry(port);
-            registry.bind("Hello", folder);
+            registry.bind("Hello" + port, folder);
             System.err.println("Server ready 4, rmi_registry started automatically");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString()); e.printStackTrace();
