@@ -28,7 +28,7 @@ public class NodeFunctionalities {
         String host = (args.length < 3) ? null : args[2];
         try {
             Registry registry = LocateRegistry.getRegistry(host, port);
-            Folder folder = (Folder) registry.lookup("Hello" + port);
+            Folder folder = (Folder) registry.lookup("Folder" + port);
             File file = folder.getFile();
             System.out.println(folder);
             System.out.println("response: " + file);
@@ -43,7 +43,7 @@ public class NodeFunctionalities {
             Folder folder = new FolderImplementation(port);
             //FileManager remoteobj = (FileManager) UnicastRemoteObject.exportObject(file, port);
             Registry registry = startRegistry(port);
-            registry.bind("Hello" + port, folder);
+            registry.bind("Folder" + port, folder);
             System.err.println("Server ready 4, rmi_registry started automatically");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString()); e.printStackTrace();

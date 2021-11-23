@@ -2,7 +2,7 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class FolderImplementation implements Folder, Serializable {
+public class FolderImplementation extends UnicastRemoteObject implements Folder{
     //private static final long serialVersionUID = 6529685098267757690L;
 
     File file = null;
@@ -13,7 +13,7 @@ public class FolderImplementation implements Folder, Serializable {
     }
 
     @Override
-    public File getFile() {
+    public File getFile() throws RemoteException{
         return this.file;
     }
 
