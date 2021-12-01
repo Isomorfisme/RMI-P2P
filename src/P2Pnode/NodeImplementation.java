@@ -1,18 +1,21 @@
-import java.io.Serializable;
+package P2Pnode;
+
+import common.File;
+import common.Node;
+
 import java.rmi.RemoteException;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FolderImplementation extends UnicastRemoteObject implements Folder{
+public class NodeImplementation extends UnicastRemoteObject implements Node {
     //private static final long serialVersionUID = 6529685098267757690L;
 
     File file = null;
     List<String> clientUsernames = new ArrayList<>();
-    List<Folder> clientFolders = new ArrayList<>();
+    List<Node> clientFolders = new ArrayList<>();
 
-    public FolderImplementation(int port) throws RemoteException {
+    public NodeImplementation(int port) throws RemoteException {
         super();
         this.file = new File(port);
     }
@@ -23,7 +26,7 @@ public class FolderImplementation extends UnicastRemoteObject implements Folder{
     }
 
     @Override
-    public Folder getFolder() throws RemoteException{
+    public Node getFolder() throws RemoteException{
         if (this.clientFolders.isEmpty()){
             return null;
         }else {
@@ -32,12 +35,12 @@ public class FolderImplementation extends UnicastRemoteObject implements Folder{
     }
 
     @Override
-    public void register(Folder clientFolder, String username) throws RemoteException {
+    public void register(Node clientFolder, String username) throws RemoteException {
         this.clientUsernames.add(username);
         this.clientFolders.add(clientFolder);
     }
 
     public String toString(){
-        return String.format("File: %s", this.file);
+        return String.format("common.File: %s", this.file);
     }
 }
