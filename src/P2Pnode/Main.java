@@ -1,6 +1,6 @@
 package P2Pnode;
 
-import common.File;
+import common.P2PFile;
 import common.Node;
 
 import java.rmi.RemoteException;
@@ -44,7 +44,7 @@ public class Main{
         }
        while (true){
             Thread.sleep(5000);
-            System.out.println("common.Node will list all files from all registered nodes");
+            System.out.println("Node will list all files from all registered nodes");
             listFiles();
        }
     }
@@ -79,11 +79,10 @@ public class Main{
 
     public static void listFiles(){
         try{
-            Node clientFolder = myFolder.getFolder();
-            File file = myFolder.getFile();
+            myFolder.getContents();
+            P2PFile file = myFolder.getFile();
             System.out.println(myFolder);
-            System.out.println(clientFolder);
-            System.out.println("common.File: " + file);
+            System.out.println("File: " + file);
         } catch (Exception e) {
             System.err.println(("Client exception: " + e.toString())); e.printStackTrace();
         }
