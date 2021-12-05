@@ -42,7 +42,7 @@ public class Main{
         if (args.length > 1) {  //There is a port to connect
             connectToServer();
         }
-        System.out.println("Node will list all files from all registered nodes");
+        Thread.sleep(500); //To start (print) later than the rmi_registry start
         while (true) {
             getInstruction();
         }
@@ -83,8 +83,10 @@ public class Main{
             System.out.println("Folder: " + myFolder);
             System.out.println("File Names: " + files);
             for (P2PFile file:files) {
-                System.out.println(file.name);
-                System.out.println(file.hash);
+                System.out.println("Name: " + file.getName());
+                System.out.println("Hash: " + file.getHash());
+                System.out.println("Keywords: " + Arrays.toString(file.getKeywords()));
+                System.out.println("Description: " + file.getDescription());
             }
         } catch (Exception e) {
             System.err.println(("Client exception: " + e.toString())); e.printStackTrace();
@@ -92,21 +94,27 @@ public class Main{
     }
 
     public static void getInstruction() throws RemoteException {
-        Scanner scanner = new Scanner(System.in);
         List instructions = Arrays.asList("listfiles", "setname", "setkeywords", "setdescription");
         System.out.println("Write one instruction: " + instructions);
+        Scanner scanner = new Scanner(System.in);
         String instruction = scanner.nextLine();
         if(instructions.contains(instruction)){
             if(instruction.equals("listfiles")){
                 listFiles();
             }else
-            if(instruction.equals("setname")){
+            if(instruction.equals("setname") || instruction.equals("setkeywords") || instruction.equals("setdescription")){
                 System.out.println("Write the filename of the file you want to rename");
                 String filename = scanner.nextLine();
                 HashMap<String, P2PFile> files = myFolder.getContents();
                 if(files.containsKey(filename)) {
                     P2PFile file = files.get(filename);
-                    file.setName();
+                    if(instruction.equals("setname")){
+                        file.setName();
+                    }else if(instruction.equals("setkeywords")){
+                        file.setKeywords();
+                    }else{ //if(instruction.equals("setdescription")){ (not necessary cause of upper if)
+                        file.setDescription();
+                    }
                 }else{
                     System.out.println("This file does not exist in this folder");
                 }

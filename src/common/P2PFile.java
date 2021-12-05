@@ -11,12 +11,12 @@ import java.util.Scanner;
 public class P2PFile implements Serializable {
     private static final long serialVersionUID = 6529685098267757691L;
 
-    public String hash = "";
-    public String name = "";
-    public String[] keywords;
-    public String description = "";
-    public Path localPath;
-    public File file;
+    private String hash = "";
+    private String name = "";
+    private String[] keywords;
+    private String description = "";
+    private Path localPath;
+    private File file;
 
     public P2PFile(Path path, String name) throws IOException {
         localPath = path;
@@ -32,11 +32,19 @@ public class P2PFile implements Serializable {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void setKeywords() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Write the keywords: ");
+        System.out.println("Write the keywords separated by one space: ");
         String keywords = scanner.nextLine();
         this.keywords = keywords.split(" ");
+    }
+
+    public String[] getKeywords(){
+        return keywords;
     }
 
     public void setDescription() {
@@ -44,6 +52,12 @@ public class P2PFile implements Serializable {
         System.out.println("Write the description: ");
         String description = scanner.nextLine();
         this.description = description;
+        System.out.println(this.description);
+    }
+
+    public String getDescription(){
+        System.out.println(this.description);
+        return description;
     }
 
     public byte[] toBytes() throws IOException {
@@ -54,6 +68,10 @@ public class P2PFile implements Serializable {
         BigInteger bigInt = new BigInteger(1, fileContent);
         String bigHash = String.format("%0" + (fileContent.length << 1) + "x", bigInt);
         hash = bigHash.substring(0, Math.min(bigHash.length(), 100));
+    }
+
+    public String getHash(){
+        return hash;
     }
 
     public String toString(){
