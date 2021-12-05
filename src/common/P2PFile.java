@@ -13,6 +13,8 @@ public class P2PFile implements Serializable {
 
     public String hash = "";
     public String name = "";
+    public String[] keywords;
+    public String description = "";
     public Path localPath;
     public File file;
 
@@ -25,9 +27,23 @@ public class P2PFile implements Serializable {
 
     public void setName() {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Write the filename: ");
-        String filename = scanner.nextLine();
-        this.name = filename;
+        System.out.println("Write the new Name: ");
+        String name = scanner.nextLine();
+        this.name = name;
+    }
+
+    public void setKeywords() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Write the keywords: ");
+        String keywords = scanner.nextLine();
+        this.keywords = keywords.split(" ");
+    }
+
+    public void setDescription() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Write the description: ");
+        String description = scanner.nextLine();
+        this.description = description;
     }
 
     public byte[] toBytes() throws IOException {
@@ -37,7 +53,7 @@ public class P2PFile implements Serializable {
     public void hash(byte[] fileContent){
         BigInteger bigInt = new BigInteger(1, fileContent);
         String bigHash = String.format("%0" + (fileContent.length << 1) + "x", bigInt);
-        hash = bigHash.substring(0, Math.min(bigHash.length(), 50));
+        hash = bigHash.substring(0, Math.min(bigHash.length(), 100));
     }
 
     public String toString(){

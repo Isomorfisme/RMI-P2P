@@ -6,9 +6,7 @@ import common.Node;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main{
     private static Registry startRegistry(int RMIPortNum) throws RemoteException {
@@ -44,11 +42,10 @@ public class Main{
         if (args.length > 1) {  //There is a port to connect
             connectToServer();
         }
-       while (true){
-            Thread.sleep(5000);
-            System.out.println("Node will list all files from all registered nodes");
-            listFiles();
-       }
+        System.out.println("Node will list all files from all registered nodes");
+        while (true) {
+            getInstruction();
+        }
     }
 
     public static void startServer() throws RemoteException{
@@ -86,10 +83,36 @@ public class Main{
             System.out.println("Folder: " + myFolder);
             System.out.println("File Names: " + files);
             for (P2PFile file:files) {
+                System.out.println(file.name);
                 System.out.println(file.hash);
             }
         } catch (Exception e) {
             System.err.println(("Client exception: " + e.toString())); e.printStackTrace();
+        }
+    }
+
+    public static void getInstruction() throws RemoteException {
+        Scanner scanner = new Scanner(System.in);
+        List instructions = Arrays.asList("listfiles", "setname", "setkeywords", "setdescription");
+        System.out.println("Write one instruction: " + instructions);
+        String instruction = scanner.nextLine();
+        if(instructions.contains(instruction)){
+            if(instruction.equals("listfiles")){
+                listFiles();
+            }else
+            if(instruction.equals("setname")){
+                System.out.println("Write the filename of the file you want to rename");
+                String filename = scanner.nextLine();
+                HashMap<String, P2PFile> files = myFolder.getContents();
+                if(files.containsKey(filename)) {
+                    P2PFile file = files.get(filename);
+                    file.setName();
+                }else{
+                    System.out.println("This file does not exist in this folder");
+                }
+            }
+        }else{
+            System.out.println("Invalid instruction!");
         }
     }
 }
