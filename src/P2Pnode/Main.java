@@ -6,6 +6,8 @@ import common.Node;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main{
@@ -79,10 +81,13 @@ public class Main{
 
     public static void listFiles(){
         try{
-            myFolder.getContents();
-            P2PFile file = myFolder.getFile();
-            System.out.println(myFolder);
-            System.out.println("File: " + file);
+            HashMap<String, P2PFile> contents = myFolder.getContents();
+            Collection <P2PFile> files = myFolder.getFiles();
+            System.out.println("Folder: " + myFolder);
+            System.out.println("File Names: " + files);
+            for (P2PFile file:files) {
+                System.out.println(file.hash);
+            }
         } catch (Exception e) {
             System.err.println(("Client exception: " + e.toString())); e.printStackTrace();
         }
