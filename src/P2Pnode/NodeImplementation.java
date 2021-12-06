@@ -61,6 +61,14 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
         this.clientFolders.add(clientFolder);
     }
 
+    @Override
+    public void updateContents(P2PFile p2PFile) {
+        System.out.println(p2PFile);
+        String name = p2PFile.getFile().getName();
+        files.replace(name, files.get(name), p2PFile);
+        System.out.println(files);
+    }
+
     public String toString(){
         return String.format(String.valueOf(folderPath));
     }

@@ -11,4 +11,6 @@ public interface Node extends Remote {
     HashMap<String, P2PFile> getContents() throws RemoteException;
 
     void register(Node clientFolder, String username) throws RemoteException;
+
+    void updateContents(P2PFile p2PFile) throws RemoteException;
 }

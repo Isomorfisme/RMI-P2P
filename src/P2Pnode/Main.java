@@ -83,6 +83,7 @@ public class Main{
             System.out.println("Folder: " + myFolder);
             System.out.println("File Names: " + files);
             for (P2PFile file:files) {
+                System.out.println(contents.get(file.getName()));
                 System.out.println("Name: " + file.getName());
                 System.out.println("Hash: " + file.getHash());
                 System.out.println("Keywords: " + Arrays.toString(file.getKeywords()));
@@ -107,14 +108,14 @@ public class Main{
                 String filename = scanner.nextLine();
                 HashMap<String, P2PFile> files = myFolder.getContents();
                 if(files.containsKey(filename)) {
-                    P2PFile file = files.get(filename);
                     if(instruction.equals("setname")){
-                        file.setName();
+                        files.get(filename).setName();
                     }else if(instruction.equals("setkeywords")){
-                        file.setKeywords();
+                        files.get(filename).setKeywords();
                     }else{ //if(instruction.equals("setdescription")){ (not necessary cause of upper if)
-                        file.setDescription();
+                        files.get(filename).setDescription();
                     }
+                    myFolder.updateContents(files.get(filename));
                 }else{
                     System.out.println("This file does not exist in this folder");
                 }

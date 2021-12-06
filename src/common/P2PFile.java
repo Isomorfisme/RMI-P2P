@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class P2PFile implements Serializable {
@@ -74,7 +75,11 @@ public class P2PFile implements Serializable {
         return hash;
     }
 
+    public File getFile(){
+        return file;
+    }
+
     public String toString(){
-        return this.name;
+        return this.hash + this.name + Arrays.toString(this.keywords) + this.description + this.localPath + this.file;
     }
 }
