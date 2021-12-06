@@ -71,6 +71,7 @@ public class Main{
             String username = scanner.nextLine();
             System.out.println("Register folder with username: " + username);
             serverFolder.register(myFolder, username);
+            myFolder.connect(serverFolder);
         } catch (Exception e) {
             System.err.println("Client exception: " + e.toString()); e.printStackTrace();
         }

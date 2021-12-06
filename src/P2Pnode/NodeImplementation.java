@@ -24,6 +24,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
     List<Node> clientFolders = new ArrayList<>();
     HashMap<String, P2PFile> files =  new HashMap<>();
     Path folderPath;
+    Node serverFolder;
 
     public NodeImplementation(int port) throws IOException {
         super();
@@ -64,9 +65,29 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
     }
 
     @Override
-    public void updateContents(P2PFile p2PFile) {
+    public void connect(Node serverFolder) throws RemoteException{
+        this.serverFolder = serverFolder;
+    }
+
+    @Override
+    public void updateContents(P2PFile p2PFile) throws RemoteException{
         String name = p2PFile.getFile().getName();
         files.replace(name, files.get(name), p2PFile);
+    }
+
+    @Override
+    public HashMap<String, P2PFile> getAllContents(Node node) throws RemoteException {
+        if(serverFolder == null){
+            return getAllContentsFromTop();
+        }else{
+           return getAllContents(serverFolder);
+        }
+    }
+
+    @Override
+    public HashMap<String, P2PFile> getAllContentsFromTop() throws RemoteException {
+        HashMap<String, P2PFile> files = getContents();
+        return files;
     }
 
     public String toString(){
