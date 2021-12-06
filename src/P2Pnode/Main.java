@@ -81,13 +81,9 @@ public class Main{
             HashMap<String, P2PFile> contents = myFolder.getContents();
             Collection <P2PFile> files = myFolder.getFiles();
             System.out.println("Folder: " + myFolder);
-            System.out.println("File Names: " + files);
             for (P2PFile file:files) {
-                System.out.println(contents.get(file.getName()));
-                System.out.println("Name: " + file.getName());
-                System.out.println("Hash: " + file.getHash());
-                System.out.println("Keywords: " + Arrays.toString(file.getKeywords()));
-                System.out.println("Description: " + file.getDescription());
+                //System.out.println(contents.get(file.getName()));
+                System.out.println(file);
             }
         } catch (Exception e) {
             System.err.println(("Client exception: " + e.toString())); e.printStackTrace();

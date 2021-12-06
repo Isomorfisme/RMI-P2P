@@ -38,19 +38,21 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
 
     @Override
     public HashMap<String, P2PFile> getContents() throws RemoteException {
-        try (Stream<Path> paths = Files.walk(Paths.get(String.valueOf(folderPath)))) {
-            paths
-                    .filter(Files::isRegularFile)
-                    .forEach(path -> {
-                        file = new File(String.valueOf(path));
-                        try {
-                            files.put(file.getName(), new P2PFile(path, file.getName()));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(files.isEmpty()){
+            try (Stream<Path> paths = Files.walk(Paths.get(String.valueOf(folderPath)))) {
+                paths
+                        .filter(Files::isRegularFile)
+                        .forEach(path -> {
+                            file = new File(String.valueOf(path));
+                            try {
+                                files.put(file.getName(), new P2PFile(path, file.getName()));
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return files;
     }
@@ -63,10 +65,8 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
 
     @Override
     public void updateContents(P2PFile p2PFile) {
-        System.out.println(p2PFile);
         String name = p2PFile.getFile().getName();
         files.replace(name, files.get(name), p2PFile);
-        System.out.println(files);
     }
 
     public String toString(){

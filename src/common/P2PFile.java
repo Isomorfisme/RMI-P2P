@@ -14,6 +14,7 @@ public class P2PFile implements Serializable {
 
     private String hash = "";
     private String name = "";
+    private String filename = "";
     private String[] keywords;
     private String description = "";
     private Path localPath;
@@ -22,6 +23,7 @@ public class P2PFile implements Serializable {
     public P2PFile(Path path, String name) throws IOException {
         localPath = path;
         file = new File(String.valueOf(path));
+        filename = file.getName();
         this.name = name;
         hash(toBytes());
     }
@@ -53,11 +55,9 @@ public class P2PFile implements Serializable {
         System.out.println("Write the description: ");
         String description = scanner.nextLine();
         this.description = description;
-        System.out.println(this.description);
     }
 
     public String getDescription(){
-        System.out.println(this.description);
         return description;
     }
 
@@ -80,6 +80,7 @@ public class P2PFile implements Serializable {
     }
 
     public String toString(){
-        return this.hash + this.name + Arrays.toString(this.keywords) + this.description + this.localPath + this.file;
+        return "Filename: " + this.filename + "\nHash: " + this.hash + "\nName: " + this.name +
+                "\nKeywords: " + Arrays.toString(this.keywords) + "\nDescription: " + this.description;
     }
 }
