@@ -42,6 +42,7 @@ public class Main{
         if (args.length > 1) {  //There is a port to connect
             connectToServer();
         }
+        myFolder.recognizeFiles();
         Thread.sleep(500); //To start (print) later than the rmi_registry start
         while (true) {
             getInstruction();
@@ -54,6 +55,7 @@ public class Main{
             myFolder = new NodeImplementation(myPort);
             myRegistry = startRegistry(myPort);
             myRegistry.bind("Folder", myFolder);
+            myFolder.putMyFolder(myFolder);
             System.err.println("Server ready 4, rmi_registry started automatically");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString()); e.printStackTrace();
@@ -79,13 +81,18 @@ public class Main{
 
     public static void listFiles(){
         try{
-            HashMap<String, P2PFile> contents = myFolder.getContents();
-            Collection <P2PFile> files = myFolder.getFiles();
+            HashMap<String, P2PFile> contents = myFolder.getAllContents(myFolder);
+            Collection<P2PFile> allFiles = contents.values();
+            for (P2PFile file:allFiles) {
+                System.out.println(file);
+            }
+
+            /*Collection <P2PFile> files = myFolder.getFiles();
             System.out.println("Folder: " + myFolder);
             for (P2PFile file:files) {
                 //System.out.println(contents.get(file.getName()));
                 System.out.println(file);
-            }
+            }*/
         } catch (Exception e) {
             System.err.println(("Client exception: " + e.toString())); e.printStackTrace();
         }
@@ -103,7 +110,7 @@ public class Main{
             if(instruction.equals("setname") || instruction.equals("setkeywords") || instruction.equals("setdescription")){
                 System.out.println("Write the filename of the file you want to rename");
                 String filename = scanner.nextLine();
-                HashMap<String, P2PFile> files = myFolder.getContents();
+                HashMap<String, P2PFile> files = myFolder.getContents(myFolder);
                 if(files.containsKey(filename)) {
                     if(instruction.equals("setname")){
                         files.get(filename).setName();

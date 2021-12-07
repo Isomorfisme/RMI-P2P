@@ -22,31 +22,59 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
     File file = null;
     List<String> clientUsernames = new ArrayList<>();
     List<Node> clientFolders = new ArrayList<>();
-    HashMap<String, P2PFile> files =  new HashMap<>();
+    HashMap<String, P2PFile> folderFiles =  new HashMap<>();
     Path folderPath;
+    String stringPath;
     Node serverFolder;
+    Node myFolder;
 
     public NodeImplementation(int port) throws IOException {
         super();
         String path = new File(".").getCanonicalPath();
         folderPath = Files.createDirectories(Paths.get(path + "\\files" + port));
+        stringPath = String.valueOf(folderPath);
     }
 
     @Override
     public Collection<P2PFile> getFiles() throws RemoteException{
-        return files.values();
+        return folderFiles.values();
     }
 
     @Override
-    public HashMap<String, P2PFile> getContents() throws RemoteException {
-        if(files.isEmpty()){
-            try (Stream<Path> paths = Files.walk(Paths.get(String.valueOf(folderPath)))) {
+    public List<Node> getClientFolders() throws RemoteException{
+        return clientFolders;
+    }
+
+    @Override
+    public Node getServerFolder() throws RemoteException{
+        return serverFolder;
+    }
+
+    @Override
+    public Node getMyFolder() throws RemoteException{
+        return myFolder;
+    }
+
+    @Override
+    public HashMap<String, P2PFile> getFolderFiles() throws RemoteException{
+        return folderFiles;
+    }
+
+    @Override
+    public String getStringPath() throws RemoteException{
+        return stringPath;
+    }
+
+    @Override
+    public void recognizeFiles() throws RemoteException{
+        if(folderFiles.isEmpty()){
+            try (Stream<Path> paths = Files.walk(Paths.get(stringPath))) {
                 paths
                         .filter(Files::isRegularFile)
                         .forEach(path -> {
                             file = new File(String.valueOf(path));
                             try {
-                                files.put(file.getName(), new P2PFile(path, file.getName()));
+                                folderFiles.put(file.getName(), new P2PFile(path, file.getName()));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -55,7 +83,11 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
                 e.printStackTrace();
             }
         }
-        return files;
+    }
+
+    @Override
+    public HashMap<String, P2PFile> getContents(Node node) throws RemoteException {
+       return node.getFolderFiles();
     }
 
     @Override
@@ -70,23 +102,49 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
     }
 
     @Override
+    public void putMyFolder(Node myFolder) throws RemoteException{
+        this.myFolder = myFolder;
+    }
+
+    @Override
     public void updateContents(P2PFile p2PFile) throws RemoteException{
-        String name = p2PFile.getFile().getName();
-        files.replace(name, files.get(name), p2PFile);
+        String name = p2PFile.getFilename();
+        folderFiles.replace(name, folderFiles.get(name), p2PFile);
     }
 
     @Override
     public HashMap<String, P2PFile> getAllContents(Node node) throws RemoteException {
-        if(serverFolder == null){
-            return getAllContentsFromTop();
+        if(node.getServerFolder() == null){
+            HashMap<String, P2PFile> files = new HashMap<>();
+            return getAllContentsFromTop(node.getMyFolder(), files);
         }else{
-           return getAllContents(serverFolder);
+            return getAllContents(node.getServerFolder());
         }
     }
 
     @Override
-    public HashMap<String, P2PFile> getAllContentsFromTop() throws RemoteException {
-        HashMap<String, P2PFile> files = getContents();
+    public HashMap<String, P2PFile> getAllContentsFromTop(Node node, HashMap<String, P2PFile> files) throws RemoteException {
+        HashMap<String, P2PFile> actualNodeFiles = node.getContents(node);
+        /*Collection<P2PFile> allFiles = files.values();
+        if(!files.isEmpty()){
+            for(P2PFile nodeFile: actualNodeFiles.values()){
+                for (P2PFile file: allFiles) {
+                    if(nodeFile.getHash().equals(file.getHash())){
+
+                    }
+                }
+            }
+        }*/
+        files.putAll(actualNodeFiles);
+        System.out.println(node);
+        //System.out.println(files.values());
+        List<Node> clients = node.getClientFolders();
+        if(!clients.isEmpty()){
+            System.out.println("!");
+            for (Node client:clients) {
+                files.putAll(getAllContentsFromTop(client, files));
+            }
+        }
         return files;
     }
 
