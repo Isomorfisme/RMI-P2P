@@ -128,6 +128,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
     public HashMap<String, P2PFile> getAllContentsFromTop(Node node, HashMap<String, P2PFile> files) throws RemoteException {
         HashMap<String, P2PFile> actualNodeFiles = node.getContents(node);
         Collection<P2PFile> allFiles = files.values();
+        HashMap<String, P2PFile> repeatedFiles = new HashMap<>();
         if(!files.isEmpty()){
             for(P2PFile nodeFile: actualNodeFiles.values()){
                 for (P2PFile file: allFiles) {
@@ -136,12 +137,14 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
                         file.addName(nodeFile.getNames());
                         file.addKeywords(nodeFile.getKeywords());
                         file.addDescription(nodeFile.getDescription());
-                        actualNodeFiles.put(nodeFile.getName(), file);
+                        repeatedFiles.put(nodeFile.getName(), file);
+                        //actualNodeFiles.put(nodeFile.getName(), file);
                     }
                 }
             }
         }
         files.putAll(actualNodeFiles);
+        files.putAll(repeatedFiles);
         System.out.println(node);
         //System.out.println(files.values());
         List<Node> clients = node.getClientFolders();
