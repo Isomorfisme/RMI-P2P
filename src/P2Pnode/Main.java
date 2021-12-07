@@ -55,7 +55,7 @@ public class Main{
             myFolder = new NodeImplementation(myPort);
             myRegistry = startRegistry(myPort);
             myRegistry.bind("Folder", myFolder);
-            myFolder.putMyFolder(myFolder);
+            myFolder.putMyFolder(myFolder, myPort);
             System.err.println("Server ready 4, rmi_registry started automatically");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString()); e.printStackTrace();

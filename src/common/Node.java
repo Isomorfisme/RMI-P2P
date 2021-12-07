@@ -27,7 +27,7 @@ public interface Node extends Remote {
 
     void connect(Node serverFolder) throws RemoteException;
 
-    void putMyFolder(Node myFolder) throws RemoteException;
+    void putMyFolder(Node myFolder, Integer myPort) throws RemoteException;
 
     void updateContents(P2PFile p2PFile) throws RemoteException;
 

@@ -20,6 +20,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
     //private static final long serialVersionUID = 6529685098267757690L;
 
     File file = null;
+    Integer myPort;
     List<String> clientUsernames = new ArrayList<>();
     List<Node> clientFolders = new ArrayList<>();
     HashMap<String, P2PFile> folderFiles =  new HashMap<>();
@@ -102,8 +103,9 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
     }
 
     @Override
-    public void putMyFolder(Node myFolder) throws RemoteException{
+    public void putMyFolder(Node myFolder, Integer myPort) throws RemoteException{
         this.myFolder = myFolder;
+        this.myPort = myPort;
     }
 
     @Override
@@ -125,16 +127,20 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
     @Override
     public HashMap<String, P2PFile> getAllContentsFromTop(Node node, HashMap<String, P2PFile> files) throws RemoteException {
         HashMap<String, P2PFile> actualNodeFiles = node.getContents(node);
-        /*Collection<P2PFile> allFiles = files.values();
+        Collection<P2PFile> allFiles = files.values();
         if(!files.isEmpty()){
             for(P2PFile nodeFile: actualNodeFiles.values()){
                 for (P2PFile file: allFiles) {
                     if(nodeFile.getHash().equals(file.getHash())){
-
+                        file.addFilename(nodeFile.getFilename());
+                        file.addName(nodeFile.getNames());
+                        file.addKeywords(nodeFile.getKeywords());
+                        file.addDescription(nodeFile.getDescription());
+                        actualNodeFiles.put(nodeFile.getName(), file);
                     }
                 }
             }
-        }*/
+        }
         files.putAll(actualNodeFiles);
         System.out.println(node);
         //System.out.println(files.values());

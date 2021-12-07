@@ -6,22 +6,27 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class P2PFile implements Serializable {
     private static final long serialVersionUID = 6529685098267757691L;
 
-    private String hash = "";
+    private String hash;
+    private ArrayList<String> names = new ArrayList<>();
     private String name = "";
     private String filename = "";
-    private String[] keywords;
-    private String description = "";
+    private ArrayList<String> filenames = new ArrayList<>();
+    private ArrayList<String> keywords = new ArrayList<>();
+    private ArrayList<String> descriptions = new ArrayList<>();
 
     public P2PFile(Path path, String name) throws IOException {
         File file = new File(String.valueOf(path));
         filename = file.getName();
+        filenames.add(filename);
         this.name = name;
+        names.add(this.name);
         hash(toBytes(file));
     }
 
@@ -29,21 +34,36 @@ public class P2PFile implements Serializable {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Write the new Name: ");
         String name = scanner.nextLine();
+        names.remove(this.name);
         this.name = name;
+        names.add(name);
     }
 
-    public String getName() {
+    public void addName(ArrayList<String> name){
+        names.addAll(name);
+    }
+
+    public String getName(){
         return name;
+    }
+
+    public ArrayList<String> getNames() {
+        return names;
     }
 
     public void setKeywords() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Write the keywords separated by one space: ");
         String keywords = scanner.nextLine();
-        this.keywords = keywords.split(" ");
+        String[] allWords = keywords.split(" ");
+        this.keywords.addAll(Arrays.asList(allWords));
     }
 
-    public String[] getKeywords(){
+    public void addKeywords(ArrayList<String> moreKeywords){
+        keywords.addAll(moreKeywords);
+    }
+
+    public ArrayList<String> getKeywords(){
         return keywords;
     }
 
@@ -51,11 +71,15 @@ public class P2PFile implements Serializable {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Write the description: ");
         String description = scanner.nextLine();
-        this.description = description;
+        descriptions.add(description);
     }
 
-    public String getDescription(){
-        return description;
+    public void addDescription(ArrayList<String> moreDescriptions) {
+        descriptions.addAll(moreDescriptions);
+    }
+
+    public ArrayList<String> getDescription(){
+        return descriptions;
     }
 
     public byte[] toBytes(File file) throws IOException {
@@ -76,8 +100,12 @@ public class P2PFile implements Serializable {
         return filename;
     }
 
+    public void addFilename(String filename){
+        filenames.add(filename);
+    }
+
     public String toString(){
-        return "Filename: " + this.filename + "\nHash: " + this.hash + "\nName: " + this.name +
-                "\nKeywords: " + Arrays.toString(this.keywords) + "\nDescription: " + this.description;
+        return "Filename: " + this.filename + "\nHash: " + this.hash + "\nName: " + this.names +
+                "\nKeywords: " + this.keywords + "\nDescription: " + this.descriptions + "\n";
     }
 }
