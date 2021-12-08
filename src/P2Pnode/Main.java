@@ -92,7 +92,7 @@ public class Main{
     }
 
     public static void getInstruction() throws RemoteException {
-        List instructions = Arrays.asList("listfiles", "setname", "setkeywords", "setdescription", "downloadfile");
+        List instructions = Arrays.asList("listfiles", "setname", "setkeywords", "setdescription", "downloadfile", "showfile");
         System.out.println("Write one instruction: " + instructions);
         Scanner scanner = new Scanner(System.in);
         String instruction = scanner.nextLine();
@@ -121,6 +121,11 @@ public class Main{
                 System.out.println("Write the name of the file you want to download");
                 String name = scanner.nextLine();
                 myFolder.downloadFile(name);
+            }else
+            if(instruction.equals("showfile")){
+                System.out.println("Write the name of the file you want to show (works with partial search)");
+                String name = scanner.nextLine();
+                myFolder.showFile(name);
             }
         }else{
             System.out.println("Invalid instruction!");

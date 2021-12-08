@@ -196,6 +196,18 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
         }
     }
 
+    @Override
+    public void showFile(String name) throws RemoteException {
+        Collection<P2PFile> files = getAllContents(myFolder).values();
+        for (P2PFile file:files) {
+            for (String fname : file.getNames()) {
+                if (fname.contains(name)) {
+                    System.out.println(file);
+                }
+            }
+        }
+    }
+
     public String toString(){
         return String.format(String.valueOf(folderPath));
     }
