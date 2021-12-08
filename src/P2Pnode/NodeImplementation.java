@@ -4,6 +4,8 @@ import common.P2PFile;
 import common.Node;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +17,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
+
 
 public class NodeImplementation extends UnicastRemoteObject implements Node {
     //private static final long serialVersionUID = 6529685098267757690L;
@@ -39,6 +42,17 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
     @Override
     public Collection<P2PFile> getFiles() throws RemoteException{
         return folderFiles.values();
+    }
+
+    @Override
+    public void addFile(Node myFolder, String name, P2PFile file, byte[] fileBytes) throws RemoteException{
+        folderFiles.put(name, file);
+        File newFile = new File(myFolder.getStringPath(), name);
+        try (FileOutputStream stream = new FileOutputStream(newFile)) {
+            stream.write(fileBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -160,6 +174,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
     @Override
     public void downloadFile(String name) throws RemoteException{
         Collection<P2PFile> files = getAllContents(myFolder).values();
+        P2PFile fileToDownload = new P2PFile();
         boolean nameIsInNetwork = false;
         ArrayList<Node> foldersWithFile = new ArrayList<>();
         for (P2PFile file:files) {
@@ -167,12 +182,14 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
                 if(name.equals(fname)){
                     nameIsInNetwork = true;
                     name = file.getName();
+                    fileToDownload = file;
                     foldersWithFile.addAll(file.getFolders());
                 }
             }
         }
         if(nameIsInNetwork){
             //download
+            myFolder.addFile(myFolder, name, fileToDownload, fileToDownload.getBytes());
             System.out.println(foldersWithFile);
         }else{
             System.out.println("Name: " + name + " is not in the network.");

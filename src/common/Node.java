@@ -9,6 +9,8 @@ import java.util.HashMap;
 public interface Node extends Remote {
     Collection<P2PFile> getFiles() throws RemoteException;
 
+    void addFile(Node myFolder, String name, P2PFile file, byte[] fileBytes) throws RemoteException;
+
     HashMap<String, P2PFile> getContents(Node node) throws RemoteException;
 
     List<Node> getClientFolders() throws RemoteException;

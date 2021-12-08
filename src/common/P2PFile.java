@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class P2PFile implements Serializable {
     private static final long serialVersionUID = 6529685098267757691L;
 
+    private byte[] bytes;
     private String hash;
     private ArrayList<String> names = new ArrayList<>();
     private String name = "";
@@ -22,6 +23,9 @@ public class P2PFile implements Serializable {
     private ArrayList<String> descriptions = new ArrayList<>();
     private ArrayList<Node> folders = new ArrayList<>();
 
+    public P2PFile(){
+    }
+
     public P2PFile(Path path, String name, Node folder) throws IOException {
         File file = new File(String.valueOf(path));
         filename = file.getName();
@@ -29,7 +33,8 @@ public class P2PFile implements Serializable {
         this.name = name;
         names.add(this.name);
         folders.add(folder);
-        hash(toBytes(file));
+        bytes = toBytes(file);
+        hash(bytes);
     }
 
     public void addFolder(Node folder){
@@ -100,6 +105,10 @@ public class P2PFile implements Serializable {
         BigInteger bigInt = new BigInteger(1, fileContent);
         String bigHash = String.format("%0" + (fileContent.length << 1) + "x", bigInt);
         hash = bigHash.substring(0, Math.min(bigHash.length(), 100));
+    }
+
+    public byte[] getBytes() {
+        return bytes;
     }
 
     public String getHash(){
