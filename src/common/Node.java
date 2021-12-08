@@ -34,4 +34,6 @@ public interface Node extends Remote {
     HashMap<String, P2PFile> getAllContents(Node node) throws RemoteException;
 
     HashMap<String, P2PFile> getAllContentsFromTop(Node node, HashMap<String, P2PFile> files) throws RemoteException;
+
+    void downloadFile(String name) throws RemoteException;
 }

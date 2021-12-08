@@ -20,14 +20,24 @@ public class P2PFile implements Serializable {
     private ArrayList<String> filenames = new ArrayList<>();
     private ArrayList<String> keywords = new ArrayList<>();
     private ArrayList<String> descriptions = new ArrayList<>();
+    private ArrayList<Node> folders = new ArrayList<>();
 
-    public P2PFile(Path path, String name) throws IOException {
+    public P2PFile(Path path, String name, Node folder) throws IOException {
         File file = new File(String.valueOf(path));
         filename = file.getName();
         filenames.add(filename);
         this.name = name;
         names.add(this.name);
+        folders.add(folder);
         hash(toBytes(file));
+    }
+
+    public void addFolder(Node folder){
+        folders.add(folder);
+    }
+
+    public ArrayList<Node> getFolders(){
+        return folders;
     }
 
     public void setName() {

@@ -75,7 +75,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
                         .forEach(path -> {
                             file = new File(String.valueOf(path));
                             try {
-                                folderFiles.put(file.getName(), new P2PFile(path, file.getName()));
+                                folderFiles.put(file.getName(), new P2PFile(path, file.getName(), myFolder));
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -133,12 +133,12 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
             for(P2PFile nodeFile: actualNodeFiles.values()){
                 for (P2PFile file: allFiles) {
                     if(nodeFile.getHash().equals(file.getHash())){
+                        file.addFolder(node.getMyFolder());
                         file.addFilename(nodeFile.getFilename());
                         file.addName(nodeFile.getNames());
                         file.addKeywords(nodeFile.getKeywords());
                         file.addDescription(nodeFile.getDescription());
                         repeatedFiles.put(nodeFile.getName(), file);
-                        //actualNodeFiles.put(nodeFile.getName(), file);
                     }
                 }
             }
@@ -155,6 +155,28 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
             }
         }
         return files;
+    }
+
+    @Override
+    public void downloadFile(String name) throws RemoteException{
+        Collection<P2PFile> files = getAllContents(myFolder).values();
+        boolean nameIsInNetwork = false;
+        ArrayList<Node> foldersWithFile = new ArrayList<>();
+        for (P2PFile file:files) {
+            for (String fname:file.getNames()) {
+                if(name.equals(fname)){
+                    nameIsInNetwork = true;
+                    name = file.getName();
+                    foldersWithFile.addAll(file.getFolders());
+                }
+            }
+        }
+        if(nameIsInNetwork){
+            //download
+            System.out.println(foldersWithFile);
+        }else{
+            System.out.println("Name: " + name + " is not in the network.");
+        }
     }
 
     public String toString(){

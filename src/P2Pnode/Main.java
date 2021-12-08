@@ -86,20 +86,13 @@ public class Main{
             for (P2PFile file:allFiles) {
                 System.out.println(file);
             }
-
-            /*Collection <P2PFile> files = myFolder.getFiles();
-            System.out.println("Folder: " + myFolder);
-            for (P2PFile file:files) {
-                //System.out.println(contents.get(file.getName()));
-                System.out.println(file);
-            }*/
         } catch (Exception e) {
             System.err.println(("Client exception: " + e.toString())); e.printStackTrace();
         }
     }
 
     public static void getInstruction() throws RemoteException {
-        List instructions = Arrays.asList("listfiles", "setname", "setkeywords", "setdescription");
+        List instructions = Arrays.asList("listfiles", "setname", "setkeywords", "setdescription", "downloadfile");
         System.out.println("Write one instruction: " + instructions);
         Scanner scanner = new Scanner(System.in);
         String instruction = scanner.nextLine();
@@ -123,6 +116,11 @@ public class Main{
                 }else{
                     System.out.println("This file does not exist in this folder");
                 }
+            }else
+            if(instruction.equals("downloadfile")){
+                System.out.println("Write the name of the file you want to download");
+                String name = scanner.nextLine();
+                myFolder.downloadFile(name);
             }
         }else{
             System.out.println("Invalid instruction!");
