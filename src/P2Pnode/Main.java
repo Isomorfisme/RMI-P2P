@@ -92,7 +92,7 @@ public class Main{
     }
 
     public static void getInstruction() throws RemoteException {
-        List instructions = Arrays.asList("listfiles", "setname", "setkeywords", "setdescription", "downloadfile", "showfile");
+        List instructions = Arrays.asList("listfiles", "setname", "setkeywords", "setfilename", "setdescription", "downloadfile", "showfile", "deletefile");
         System.out.println("Write one instruction: " + instructions);
         Scanner scanner = new Scanner(System.in);
         String instruction = scanner.nextLine();
@@ -100,7 +100,7 @@ public class Main{
             if(instruction.equals("listfiles")){
                 listFiles();
             }else
-            if(instruction.equals("setname") || instruction.equals("setkeywords") || instruction.equals("setdescription")){
+            if(instruction.equals("setname") || instruction.equals("setkeywords") || instruction.equals("setfilename") || instruction.equals("setdescription")){
                 System.out.println("Write the filename of the file you want to rename");
                 String filename = scanner.nextLine();
                 HashMap<String, P2PFile> files = myFolder.getContents(myFolder);
@@ -109,6 +109,9 @@ public class Main{
                         files.get(filename).setName();
                     }else if(instruction.equals("setkeywords")){
                         files.get(filename).setKeywords();
+                    }else if(instruction.equals("setfilename")){
+                        String newFilename = files.get(filename).setFilename();
+                        myFolder.changeFilename(filename, newFilename);
                     }else{ //if(instruction.equals("setdescription")){ (not necessary cause of upper if)
                         files.get(filename).setDescription();
                     }
@@ -126,6 +129,11 @@ public class Main{
                 System.out.println("Write the name of the file you want to show (works with partial search)");
                 String name = scanner.nextLine();
                 myFolder.showFile(name);
+            }else
+            if(instruction.equals("deletefile")){
+                System.out.println("Write the filename of the file you want to delete");
+                String name = scanner.nextLine();
+                myFolder.deleteFile(name);
             }
         }else{
             System.out.println("Invalid instruction!");

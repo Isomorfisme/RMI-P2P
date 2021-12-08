@@ -208,6 +208,39 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
         }
     }
 
+    @Override
+    public void deleteFile(String name) throws RemoteException{
+        Collection<P2PFile> folderFiles = getFiles();
+        boolean fileExists = false;
+        String fileToDelete = "";
+        for (P2PFile p2pfile:folderFiles) {
+            if (name.equals(p2pfile.getFilename())) {
+                fileExists = true;
+                fileToDelete = file.getName();
+                File file = new File(myFolder.getStringPath(), name);
+                System.out.println(fileExists);
+                if (file.delete()) {
+                    System.out.println("Deleted the file: " + file.getName());
+                } else {
+                    System.out.println("Failed to delete the file.");
+                }
+            }
+        }
+        System.out.println(fileExists);
+        if(fileExists){
+            this.folderFiles.remove(fileToDelete);
+        }else{
+            System.out.println("This file is not in your folder");
+        }
+    }
+
+    @Override
+    public void changeFilename(String filename, String newFilename) throws RemoteException {
+        File file = new File(getStringPath(), filename);
+        File newFile = new File(getStringPath(), newFilename);
+        file.renameTo(newFile);
+    }
+
     public String toString(){
         return String.format(String.valueOf(folderPath));
     }

@@ -40,4 +40,8 @@ public interface Node extends Remote {
     void downloadFile(String name) throws RemoteException;
 
     void showFile(String name) throws RemoteException;
+
+    void deleteFile(String name) throws RemoteException;
+
+    void changeFilename(String filename, String newFilename) throws RemoteException;
 }

@@ -82,6 +82,14 @@ public class P2PFile implements Serializable {
         return keywords;
     }
 
+    public String setFilename(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Write the new filename: ");
+        String filename = scanner.nextLine();
+        this.filename = filename;
+        return filename;
+    }
+
     public void setDescription() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Write the description: ");
