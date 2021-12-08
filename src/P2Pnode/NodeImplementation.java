@@ -12,10 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 
@@ -132,7 +129,16 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
     public HashMap<String, P2PFile> getAllContents(Node node) throws RemoteException {
         if(node.getServerFolder() == null){
             HashMap<String, P2PFile> files = new HashMap<>();
-            return getAllContentsFromTop(node.getMyFolder(), files);
+            files = getAllContentsFromTop(node.getMyFolder(), files);
+            Iterator<Map.Entry<String, P2PFile>> names = files.entrySet().iterator();
+            HashSet<P2PFile> filesSet = new HashSet<P2PFile>();
+            while(names.hasNext()){
+                Map.Entry<String, P2PFile> next = names.next();
+                if(!filesSet.add(next.getValue())){
+                    names.remove();;
+                }
+            }
+            return files;
         }else{
             return getAllContents(node.getServerFolder());
         }

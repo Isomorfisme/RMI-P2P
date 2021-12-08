@@ -132,7 +132,7 @@ public class P2PFile implements Serializable {
     }
 
     public String toString(){
-        return "Filename: " + this.filename + "\nHash: " + this.hash + "\nName: " + this.names +
+        return "Filename: " + this.filenames + "\nHash: " + this.hash + "\nName: " + this.names +
                 "\nKeywords: " + this.keywords + "\nDescription: " + this.descriptions + "\n";
     }
 }
