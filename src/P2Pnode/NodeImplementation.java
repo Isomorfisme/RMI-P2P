@@ -141,7 +141,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
                 Map.Entry<String, P2PFile> next = names.next();
                 if(!filesSet.add(next.getValue())){
                     files.remove(next.getKey(), next.getValue());
-                    names.remove();;
+                    //names.remove();;
                 }
             }
             ArrayList<P2PFile> filesToDelete = new ArrayList<>();
@@ -211,6 +211,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
                     nameIsInNetwork = true;
                     name = file.getName();
                     fileToDownload = file;
+                    fileToDownload.newName(name);
                     foldersWithFile.addAll(file.getFolders());
                 }
             }

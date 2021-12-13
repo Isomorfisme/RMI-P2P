@@ -57,6 +57,12 @@ public class P2PFile implements Serializable {
         names.add(name);
     }
 
+    public void newName(String newName){
+        name = newName;
+        names = new ArrayList<>();
+        names.add(newName);
+    }
+
     public void addName(ArrayList<String> name){
         names.addAll(name);
     }
