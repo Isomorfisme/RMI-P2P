@@ -23,6 +23,7 @@ public class P2PFile implements Serializable {
     private ArrayList<String> descriptions = new ArrayList<>();
     private ArrayList<Node> folders = new ArrayList<>();
 
+    //Empty constructor needed to declare some temporally null P2PFile objects in NodeImplementation
     public P2PFile(){
     }
 
@@ -36,6 +37,8 @@ public class P2PFile implements Serializable {
         bytes = toBytes(file);
         hash(bytes);
     }
+
+    //Setters works with scanner and there is add functions used in NodeImplementation
 
     public void addFolder(Node folder){
         folders.add(folder);
@@ -109,6 +112,8 @@ public class P2PFile implements Serializable {
         return Files.readAllBytes(file.toPath());
     }
 
+    //Gets the first 100 characters of the file converted to Hexadecimal,
+    //not all to test because it's so big but then it would be unique.
     public void hash(byte[] fileContent){
         BigInteger bigInt = new BigInteger(1, fileContent);
         String bigHash = String.format("%0" + (fileContent.length << 1) + "x", bigInt);

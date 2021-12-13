@@ -41,6 +41,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
         return folderFiles.values();
     }
 
+    //Method used only when a file is downloaded to add it node
     @Override
     public void addFile(Node myFolder, String name, P2PFile file, byte[] fileBytes) throws RemoteException{
         folderFiles.put(name, file);
@@ -77,6 +78,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
         return stringPath;
     }
 
+    //Recognizes the files in the current node's folder
     @Override
     public void recognizeFiles() throws RemoteException{
         if(folderFiles.isEmpty()){
@@ -102,6 +104,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
        return node.getFolderFiles();
     }
 
+    //Needed to add myFolder and server folder cause of recursive search
     @Override
     public void register(Node clientFolder, String username) throws RemoteException {
         this.clientUsernames.add(username);
@@ -119,12 +122,14 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
         this.myPort = myPort;
     }
 
+    //Updates P2Pfile arguments by replacing it
     @Override
     public void updateContents(P2PFile p2PFile) throws RemoteException{
         String name = p2PFile.getFilename();
-        folderFiles.replace(name, folderFiles.get(name), p2PFile);
+        folderFiles.replace(name, p2PFile);
     }
 
+    //Gets all the contents of the network by going to the first node and then searching all clients
     @Override
     public HashMap<String, P2PFile> getAllContents(Node node) throws RemoteException {
         if(node.getServerFolder() == null){
@@ -135,8 +140,26 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
             while(names.hasNext()){
                 Map.Entry<String, P2PFile> next = names.next();
                 if(!filesSet.add(next.getValue())){
+                    files.remove(next.getKey(), next.getValue());
                     names.remove();;
                 }
+            }
+            ArrayList<P2PFile> filesToDelete = new ArrayList<>();
+            for (P2PFile file: files.values()) {
+                for (P2PFile fileToCompare: files.values()) {
+                    if(file.getHash().equals(fileToCompare.getHash()) && file != fileToCompare){
+                        P2PFile fileToDelete = new P2PFile();
+                        if(file.getNames().size() >= fileToCompare.getNames().size()){
+                            fileToDelete = fileToCompare;
+                        }else{
+                            fileToDelete = file;
+                        }
+                        filesToDelete.add(fileToDelete);
+                    }
+                }
+            }
+            for(P2PFile file:filesToDelete){
+                files.remove(file.getFilename(),file);
             }
             return files;
         }else{
@@ -144,6 +167,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
         }
     }
 
+    //Search all clients from the first node
     @Override
     public HashMap<String, P2PFile> getAllContentsFromTop(Node node, HashMap<String, P2PFile> files) throws RemoteException {
         HashMap<String, P2PFile> actualNodeFiles = node.getContents(node);
@@ -165,11 +189,8 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
         }
         files.putAll(actualNodeFiles);
         files.putAll(repeatedFiles);
-        System.out.println(node);
-        //System.out.println(files.values());
         List<Node> clients = node.getClientFolders();
         if(!clients.isEmpty()){
-            System.out.println("!");
             for (Node client:clients) {
                 files.putAll(getAllContentsFromTop(client, files));
             }
@@ -177,6 +198,7 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
         return files;
     }
 
+    //Downloads file if it's in the network not concurrent
     @Override
     public void downloadFile(String name) throws RemoteException{
         Collection<P2PFile> files = getAllContents(myFolder).values();
@@ -196,24 +218,31 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
         if(nameIsInNetwork){
             //download
             myFolder.addFile(myFolder, name, fileToDownload, fileToDownload.getBytes());
-            System.out.println(foldersWithFile);
         }else{
             System.out.println("Name: " + name + " is not in the network.");
         }
     }
 
+    //Print file arguments by name
     @Override
     public void showFile(String name) throws RemoteException {
         Collection<P2PFile> files = getAllContents(myFolder).values();
+        boolean show = false;
         for (P2PFile file:files) {
             for (String fname : file.getNames()) {
                 if (fname.contains(name)) {
-                    System.out.println(file);
+                    show = true;
+                    break;
                 }
+            }
+            if(show){
+                System.out.println(file);
+                show = false;
             }
         }
     }
 
+    //Delete file by name, only in current node folder
     @Override
     public void deleteFile(String name) throws RemoteException{
         Collection<P2PFile> folderFiles = getFiles();
@@ -224,7 +253,6 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
                 fileExists = true;
                 fileToDelete = file.getName();
                 File file = new File(myFolder.getStringPath(), name);
-                System.out.println(fileExists);
                 if (file.delete()) {
                     System.out.println("Deleted the file: " + file.getName());
                 } else {
@@ -232,7 +260,6 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
                 }
             }
         }
-        System.out.println(fileExists);
         if(fileExists){
             this.folderFiles.remove(fileToDelete);
         }else{
@@ -240,11 +267,13 @@ public class NodeImplementation extends UnicastRemoteObject implements Node {
         }
     }
 
+    //Changes file filename
     @Override
     public void changeFilename(String filename, String newFilename) throws RemoteException {
         File file = new File(getStringPath(), filename);
         File newFile = new File(getStringPath(), newFilename);
         file.renameTo(newFile);
+        newFile.delete();
     }
 
     public String toString(){

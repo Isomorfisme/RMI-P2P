@@ -43,12 +43,13 @@ public class Main{
             connectToServer();
         }
         myFolder.recognizeFiles();
-        Thread.sleep(500); //To start (print) later than the rmi_registry start
+        Thread.sleep(50); //To start (print) later than the rmi_registry start
         while (true) {
             getInstruction();
         }
     }
 
+    //Opens the node registry and binds the node
     public static void startServer() throws RemoteException{
         try {
             myPort = Integer.parseInt(params[0]);
@@ -62,6 +63,7 @@ public class Main{
         }
     }
 
+    //Connect current node to another
     public static void connectToServer() throws RemoteException{
         int port = Integer.parseInt(params[1]);
         String host = (params.length < 3) ? null : params[2];
@@ -79,6 +81,7 @@ public class Main{
         }
     }
 
+    //Lists all files in network
     public static void listFiles(){
         try{
             HashMap<String, P2PFile> contents = myFolder.getAllContents(myFolder);
@@ -91,6 +94,7 @@ public class Main{
         }
     }
 
+    //Scans and performs the instruction wanted
     public static void getInstruction() throws RemoteException {
         List instructions = Arrays.asList("listfiles", "setname", "setkeywords", "setfilename", "setdescription", "downloadfile", "showfile", "deletefile");
         System.out.println("Write one instruction: " + instructions);
